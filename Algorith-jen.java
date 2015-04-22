@@ -15,7 +15,7 @@ public class Algorithm {
     /**
       * Dynamic Programming algorithm that computes the least cost plan
       */
-    public void Algorithm (){
+    public void runAlgorithm (){
 	
 	//Iterate over all subsets
 	for (AndTerm s: this.A.keySet()){ //s
