@@ -2,8 +2,8 @@ import java.util.ArrayList;
 
 public class Plan {
 
-	//public int n; 			// Number of basic terms
-	public double p; 		// Product of selectivies of basic terms
+	public int n; 				// Number of basic terms
+	public double p; 			// Product of selectivies of basic terms
 	public boolean nobranch; 	// True: No-branch optimization was used to get best cost.
 	public double cost; 		// Best cost of plan
 	//public Plan left; 		// Left subplan
@@ -13,8 +13,9 @@ public class Plan {
 	//public AndTerm subset;		// subset (&-term) with list of basic terms
 	//public long bitmap;		// the bit array representing an index
 
-	public AndTerm left;
-	public AndTerm right;
+	public AndTerm left;		// Left index - subset
+	public AndTerm right;		// Right index - subset
+	public AndTerm subset;		// What's stored here
 
 
 	/**
@@ -28,6 +29,21 @@ public class Plan {
 	    this.cost = cost;
 	    this.left = null;
 	    this.right = null;
+	    this.subset = null;
+	    this.n = 0;
+	}
+
+	public Plan(double p,
+		boolean nobranch,
+		double cost,
+		AndTerm subset){
+	    this.p = p;
+	    this.nobranch = nobranch;
+	    this.cost = cost;
+	    this.left = null;
+	    this.right = null;
+	    this.subset = subset;
+	    this.n = subset.size();
 	}
 
 	/**
@@ -56,8 +72,8 @@ public class Plan {
 */
 	public AndTerm getLeftMostAndTerm(HashMap<AndTerm, Plan> A) {
 		Plan current = this;
-		while (current.left >= 0) {
-			current = plans.get((int)current.left);
+		while (current.left != null) {
+			current = plans.get(current.left);
 		}
 		return current.subset;
 	}
