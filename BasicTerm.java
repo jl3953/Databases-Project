@@ -3,12 +3,12 @@
 public class BasicTerm {
 	public String function;
 	public String argument;
-	public double selectivity;
+	public double p;			// Selectivity
 
 	public BasicTerm(String function, String argument, double selectivity) {
 		this.function = function;
 		this.argument = argument;
-		this.selectivity = selectivity;
+		this.p = p;
 	}
 
 	//print function(argument)
