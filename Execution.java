@@ -32,26 +32,25 @@ public class Execution
 		Costs c = new Costs(costModel);*/
 		Costs c = new Costs();						// Default cost model
 
-		// Generate &-terms with basic terms
+		// Generate subsets with basic terms
 		int i = 1;
-		ArrayList<AndTerm> andTerms = new ArrayList<AndTerm>();
+		ArrayList<Subset> subsets = new ArrayList<Subset>();
 		for (double[] query: queries) {
-			AndTerm current	= new AndTerm();
+			Subset current = new Subset(new ArrayList<BasicTerm>(), -1, c, null, null);
 			for (double p: query) {
 				String function = "t" + new Integer(i).toString;
 				String argument = "o" + new Integer(i).toString + "[i]";
-				BasicTerm term = new BasicTerm(function, argument, p);
-				current.add(term);
+				current.add(new BasicTerm(function, argument, p));
 				i++;
 			}
-			andTerms.add(current);
+			subsets.add(current);
 			i = 1;
 		}
 
 		// Run Algorithm 4.11 and print the code for the optimal plans
-		for (andTerm terms: andTerms) {
-			Algorithm alg = new Algorithm(terms, c);
-			Plan optimal = alg.runAlgorithm();
+		for (Subset subset: subsets) {
+			Algorithm4_11 alg = new Algorithm4_11(subset, c);
+			Subset optimal = alg.runAlgorithm();
 			String code = alg.getCode(optimal);
 			double cost = optimal.cost;
 

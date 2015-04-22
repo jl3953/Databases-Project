@@ -9,9 +9,11 @@ public class Plan {
 	//public Plan left; 		// Left subplan
 	//public Plan right;		// Right subplan
 	//public int leftchild;		// Index of left child subplan that gives best cost
-	//public int rightchild;		// Index of right child subplan that gives best cost
-	//public AndTerm subset;		// subset (&-term) with list of basic terms
+	//public int rightchild;	// Index of right child subplan that gives best cost
+	//public AndTerm subset;	// subset (&-term) with list of basic terms
 	//public long bitmap;		// the bit array representing an index
+
+	private ArrayList<BasicTerm> terms;
 
 	public AndTerm left;		// Left index - subset
 	public AndTerm right;		// Right index - subset
