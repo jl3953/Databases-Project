@@ -2,11 +2,11 @@ import java.util.HashMap;
 
 public class Algorithm {
 
-    //TODO MySet, CostObject
+    //TODO  CostObject
     private HashMap<MySet, CostObject> A; //array indexed by subset
 
     public Algorithm(){
-	this.A = new HashMap<MySet, CostObject>();
+	this.A = initialize();
     }
     public void Algorithm (){
 	//Initialize all CostObjects considering plans without branching and
@@ -19,7 +19,7 @@ public class Algorithm {
 	    Map.Entry entry = (Map.Entry) it.next();
 	    MySet s = entry.getKey();
 
-	    //current s'
+	    //current sprime
 	    Iterator it2 = this.A.entrySet.iterator();
 	    while (it2.hasNext()){
 		Map.Entry entry2 = (Map.Entry) it2.next();
@@ -72,6 +72,12 @@ public class Algorithm {
 		this.A.put(key, logicalAndCostObject);
 	    }
 	}
+    }
+
+    //TODO define this method more thoroughly
+    private HashMap<MySet, CostObject> initialize(){
+	HashMap<MySet, CostObject> result = new HashMap<MySet, CostObject>();
+	return result;
     }
 }
 
