@@ -183,6 +183,7 @@ public class Algorithm {
 		}
 	}
 
+
 	// Recursive method for getting the cost of a combined plan
 	public double getCombinedCost(Plan p) {
 
