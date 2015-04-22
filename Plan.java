@@ -3,15 +3,15 @@ import java.util.ArrayList;
 
 public class Plan {
 
-	int n;						// Number of basic terms
-	double p;					// Product of selectivies of basic terms
-	boolean nobranch;			// True: No-branch optimization was used to get best cost.
-	double cost;				// Best cost of plan
-	Plan left;					// Left subplan
-	Plan right;					// Right subplan
-	int leftchild;				// Index of left child subplan that gives best cost
-	int rightchild;				// Index of right child subplan that gives best cost
-	public AndTerm andTerm;		// &-term with list of basic terms
+	public int n;						// Number of basic terms
+	public double p;					// Product of selectivies of basic terms
+	public boolean nobranch;			// True: No-branch optimization was used to get best cost.
+	public double cost;					// Best cost of plan
+	public Plan left;					// Left subplan
+	public Plan right;					// Right subplan
+	public int leftchild;				// Index of left child subplan that gives best cost
+	public int rightchild;				// Index of right child subplan that gives best cost
+	public AndTerm subset;				// subset (&-term) with list of basic terms
 
 	// Create a new Plan
 	public Plan(double p, boolean nobranch, double cost, Plan left, Plan right, int leftchild, int rightchild, AndTerm andTerm) {
@@ -22,7 +22,7 @@ public class Plan {
 		this.right = right;
 		this.leftchild = leftchild;
 		this.rightchild = rightchild;
-		this.andTerm = andTerm;
+		this.subset = andTerm;
 		this.p = andTerm.computePs();
 		this.n = andTerm.terms.size();
 	}
@@ -34,6 +34,6 @@ public class Plan {
 		while (current.left >= 0) {
 			current = plans.get((int)current.left);
 		}
-		return current.andTerm;
+		return current.subset;
 	}
 }

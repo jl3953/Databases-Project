@@ -4,12 +4,12 @@ import java.util.Properties;
 
 public class Costs {
 
-	int r = 1;				// Cost to access element of array r
-	int t = 2;				// Cost of performing if test
-	int l = 1;				// Cost of performing logical and test
-	int m = 16;				// Cost of branch mis-prediction
-	int a = 2;				// Cost of writing answer
-	int f = 4;				// Cost of applying function f
+	public int r = 1;				// Cost to access element of array r
+	public int t = 2;				// Cost of performing if test
+	public int l = 1;				// Cost of performing logical and test
+	public int m = 16;				// Cost of branch mis-prediction
+	public int a = 2;				// Cost of writing answer
+	public int f = 4;				// Cost of applying function f
 
 	public Costs() {
 		// Default costs: nothing needs to change

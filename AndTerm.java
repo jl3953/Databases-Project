@@ -1,12 +1,14 @@
 import java.util.ArrayList;
 
-// The Logical-And term (&-term) is a collection of basic terms
+// The Logical-and term  / subset (&-term) is a collection of basic terms
 // Implements functions to compute the C-metric and D-metric
 // Implements functions to compute the cost of No-Branching and Logical-And Algorithms
 
 public class AndTerm {
 
-	private ArrayList<BasicTerm> terms;
+	//private ArrayList<BasicTerm> terms;
+	private TreeSet<BasicTerm> terms;
+	private int index;						// Represents where in array A this subset is stored
 
 	public AndTerm(BasicTerm term) {
 		this.terms  = new ArrayList<BasicTerm>();
@@ -22,15 +24,32 @@ public class AndTerm {
 	}
 
 	public void add(BasicTerm term) {
-		data.add(term);
+		terms.add(term);
 	}
 
-	public BasicTerm get(int i) {
+	/*public BasicTerm get(int i) {
 		return term.get(i);
 	}
 
 	public ArrayList<BasicTerm> getTerms() {
 		return terms;
+	}*/
+
+	public TreeSet<BasicTerm> getTerms() {
+		return terms;
+	}
+
+	public ArrayList<BasicTerm> getArray() {
+		return new ArrayList<BasicTerm>(terms);
+	}
+
+	// Location in array A of Algorithm 4.11
+	public int setIndex(int i) {
+		index = i;
+	}
+
+	public int getIndex() {
+		return index;
 	}
 
 	// The cost of Algorithm No-Branch
@@ -87,8 +106,8 @@ public class AndTerm {
 		if (terms.size() == 0)
 			return 0;
 		double ps = 1.0;
-		for (int i = 0; i < terms.size(); ++i) {
-			ps *= terms.get(i).p;
+		for (BasicTerm term in terms) {
+			ps *= term.p;
 		}
 		return ps;
 	}
@@ -121,7 +140,7 @@ public class AndTerm {
 	// Get the D-Metric of this & term according to Definition 4.10
 	// D-metric = ((fcost(E), p)
 
-	public Metric getDMetric(Costs c) {
+	public Metric computeDMetric(Costs c) {
 		double fCost = computeFCost(c);
 		double ps = computePs();
 		return new Metric(fCost, ps);
@@ -137,6 +156,12 @@ public class AndTerm {
 			sb.append("\n");
 		}
 		return sb.toString();
+	}
+
+	// Get number of terms
+
+	public size() {
+		return terms.size();
 	}
 
 }
