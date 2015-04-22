@@ -73,8 +73,8 @@ public class Algorithm {
     }
 
    /**
-     * Initializes the HashMap of terms and costs.
-     * @return a hashmap of costs indexed by plans
+     * Initializes the HashMap.
+     * @return a hashmap of plans indexed by andTerms
      */
     private HashMap<AndTerm, Plan> initialize(){
 		HashMap<AndTerm, Plan> result = new HashMap<AndTerm, Plan>();
@@ -100,30 +100,29 @@ public class Algorithm {
      */
     public ArrayList<AndTerm> getSubsets(AndTerm terms) {
 
-	int size = terms.size(); // k
-	long max = Math.pow(2, size); // 2^k, maximum number of subsets
-	int index = max - 1; // start from 2^k - 1
+		int size = terms.size(); // k
+		long max = Math.pow(2, size); // 2^k, maximum number of subsets
+		int index = max - 1; // start from 2^k - 1
 
-	//generating all possible subsets
-	ArrayList<AndTerm> sets = new ArrayList<AndTerm>();
-	termArray = terms.getArray(); //ArrayList of basic terms
+		//generating all possible subsets
+		ArrayList<AndTerm> sets = new ArrayList<AndTerm>();
 
-	while (index > 0) {  // skip 0 - the empty set
-	    BitSet bs = BitSet.valueOf(new long[]{index});
-	    AndTerm subset = new AndTerm();
-	    //iterate through the bit vector to determine which terms to add
-	    for (int i = 0; i < bs.length(); i++) {
-		if (bs.get(i)) {
-		    subset.add(termArray.get(i));
+		while (index > 0) {  // skip 0 - the empty set
+			BitSet bs = BitSet.valueOf(new long[]{index});
+			AndTerm subset = new AndTerm();
+			//iterate through the bit vector to determine which terms to add
+			for (int i = 0; i < bs.length(); i++) {
+				if (bs.get(i)) {
+					subset.add(termArray.get(i));
+				}
+			}
+			subset.setBit ((long) index);
+			index--;
+			subset.setIndex(index);
+			sets.add(0, subset); // add to front
 		}
-	    }
-	    index--;
-	    subset.setIndex(index - 1);
-	    sets.add(0, subset); // add to front
-	}
-	return sets;
+		return sets;
     }
-
 
     /**
       * Retrieves the cost of all plans according to the terms in the subset.
@@ -134,24 +133,18 @@ public class Algorithm {
 
 	ArrayList<Plan> result = new ArrayList<Plan>();
 
-	for (AndTerm subset: A) {
-	    int n = subset.size(); // Number of basic terms
-	    double p = subset.computePs();  // Product of selectivities of basic terms
-	    double cost = subset.LogicalAndCost(this.c);
-	    double nobranch = subset.NoBranchCost(this.c);
-	    boolean b = false; //not using nobranchcost yet
+		for (AndTerm subset: A) {
+			double cost = subset.LogicalAndCost(this.c);
+			double nobranch = subset.NoBranchCost(this.c);
 
-	    //if no-branch has lower cost, replace logical and
-	    if (nobranch < cost) {
-		cost = nobranch;
-		boolean b = true;
-	    }
+			//if no-branch has lower cost, replace logical and
+			if (nobranch < cost) {
+			}
 
-	    Plan plan = new Plan(p, b, cost);    // Right now the children don't exist
-	    result.add(plan);
+			result.add(plan);
 
-	}
+		}
 
-	return result;
+		return result;
     }
 }
