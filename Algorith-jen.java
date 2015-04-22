@@ -1,4 +1,4 @@
-import java.util.LinkedHashMap;
+import java.util.*;
 
 public class Algorithm {
 
@@ -15,10 +15,13 @@ public class Algorithm {
     /**
       * Dynamic Programming algorithm that computes the least cost plan
       */
-    public void Algorithm (){
+
+    public void runAlgorithm (){
 
 		//Iterate over all subsets
 		for (AndTerm s: this.A.keySet()){ //s
+			Plan s = A.get(s);
+			AndTerm leftmost = s.getLeftMostAndTerm(A);
 			for (AndTerm sprime: this.A.keySet()){ //sprime
 
 				//check for intersection and skip this plan if there is intersection
@@ -26,8 +29,10 @@ public class Algorithm {
 					continue;
 
 				//Otherwise, compute c and d metrics for both plans
-				Metric CMetric = s.computeCMetric(this.c);
-				Metric DMetric = s.computeDMetric(this.c);
+				Plan t = A.get(sprime);
+
+				Metric CMetric = leftmost.computeCMetric(this.c);
+				Metric DMetric = leftmost.computeDMetric(this.c);
 				Metric CMetricPrime = sprime.computeCMetric(this.c);
 				Metric DMetricPrime = sprime.computeDMetric(this.c);
 
@@ -36,9 +41,12 @@ public class Algorithm {
 					continue;
 
 				//D-metric test: lemma 4.9
-				//TODO dmetric test
-				Plan t = A.get(sprime);
+				//Incomplete dmetric test but will work for current purposes
+				//Only compares sprime with the left-most term
 				if (t.p <= 0.5) {
+					if (DMetric.a < DMetricprime.a && DMetric.b <= DMetricprime.b)
+						continue;
+				}
 				/*	boolean passDTest = true;
 					ArrayList<AndTerm> all = getAndTerms(s);		// need to compare against all &-terms of S
 					for (AndTerm term: all) {
@@ -56,17 +64,23 @@ public class Algorithm {
 
 				//Union of s and sprime
 				AndTerm key = this.A.keyset().toArray[sprime.union(s)];
-				Plan value = this.A.get(key);
+				Plan currentPlan = this.A.get(key);
+				double currentCost = currentPlan.cost;
 
-				//calculate cost for combined plan (s' && s)
-				//TODO Combined plan cost
-				double combinedCost = combinedAndCost(sprime, s);
-				double currentCost = value.cost;
+				//double p = s.p * t.p;		// the combined selectivity
+				//int leftchild = t.subset.getIndex();
+				//int rightchild = s.subset.getIndex();
+
+				double FCost = t.subset.computeFCost(c);
+				double ps = t.p;
+				double q = Math.min(ps, 1 - ps);
+				double combinedCost = FCost + c.m*q + ps * s.cost;
+
 				//if plan is optimal
 				if (combinedCost < currentCost){
-					value.cost = combinedCost;
-					value.left = sprime;
-					value.right = s;
+					currentPlan.cost = combinedCost;
+					currentPlan.left = sprime;
+					currentPlan.right = s;
 				}
 			}
 		}

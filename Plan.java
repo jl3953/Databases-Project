@@ -72,7 +72,7 @@ public class Plan {
 */
 	public AndTerm getLeftMostAndTerm(HashMap<AndTerm, Plan> A) {
 		Plan current = this;
-		while (current.left != null) {
+		while (current!= null && current.left != null) {
 			current = plans.get(current.left);
 		}
 		return current.subset;
