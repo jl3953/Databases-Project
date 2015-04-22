@@ -26,7 +26,7 @@ public class Algorithm {
 		MySet sprime = entry2.getKey();
 
 		//check that intersection is null
-		if (MySet.intersection(sprime, s) != null){
+		if (sprime.intersection(s) != null){
 		    continue;
 		}
 		CostObject currentCostObject = entry2.getValue(); //cost associated with sprime
@@ -40,7 +40,7 @@ public class Algorithm {
 		    //do nothing--suboptimal by lemma 4.9
 		} else {
 		    CostObject c = computeCost(sprime, s);
-		    MySet key = MySet.union(sprime, s);
+		    MySet key = sprime.union(s);
 		    CostObject value = this.A.get(key);
 
 		    if (c < value){

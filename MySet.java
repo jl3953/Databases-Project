@@ -24,7 +24,10 @@ public MySet{
     public boolean contains(AndTerm andterm){
 	return this.set.contains(andterm);
     }
-    
+
+    public ArrayList<AndTerm> set(){
+	return this.set;
+    }
 
     public MySet union(MySet sprime) {
     	ArrayList<AndTerm> result = new ArrayList<AndTerm>(this.set);
