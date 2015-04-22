@@ -12,6 +12,7 @@ public class Plan {
 	public int leftchild;				// Index of left child subplan that gives best cost
 	public int rightchild;				// Index of right child subplan that gives best cost
 	public AndTerm subset;				// subset (&-term) with list of basic terms
+	public long bitmap;					// the bit array representing an index
 
 	// Create a new Plan
 	public Plan(double p, boolean nobranch, double cost, Plan left, Plan right, int leftchild, int rightchild, AndTerm andTerm) {
@@ -36,4 +37,20 @@ public class Plan {
 		}
 		return current.subset;
 	}
+
+	public void setBit (long b) {
+		this.bitmap = b;
+	}
+
+	// Simpler implementation of whether two plans intersect
+    public boolean intersection(Plan p2) {
+        return (this.bitmap & p2.bitmap) != 0;
+    }
+
+	// Index of union of two plans in the array
+    public int unionPlan p2) {
+		long index = (this.bitmap | p2.bitmap);
+        return (int) (index - 1);
+    }
+
 }

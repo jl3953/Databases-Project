@@ -73,7 +73,7 @@ public class Algorithm {
 
 				// If both tests pass, compare the cost c for the combined plan (s && t) using Eq. (1)
 				// with the current cost
-				AndTerm combined = new AndTerm();
+				/*AndTerm combined = new AndTerm();							// Alternative method, messier and probably won't work
 				for(BasicTerm term : s.subset.getTerms())
 					combined.add(term);
 				for(BasicTerm term : t.subset.getTerms())
@@ -96,13 +96,22 @@ public class Algorithm {
 					}
 					index++;
 				}
-				Plan currentPlan = plans.get(index);
+				Plan currentPlan = plans.get(index);*/
+
+				Plan currentPlan = plans.get(s.subset.union(t.subset))		// Check to see if this works
+
 				double currentCost = currentPlan.cost;
 
-				double p = s.p * t.p;		// the combined selectivity
-				int leftchild = t.subset.getIndex();
-				int rightchild = s.subset.getIndex();
-				double combinedCost = getCombinedCost(new Plan(p, false, 0, null, null, leftchild, rightchild, combined));
+				//double p = s.p * t.p;		// the combined selectivity
+				//int leftchild = t.subset.getIndex();
+				//int rightchild = s.subset.getIndex();
+
+				cost += left.productOfSelectivities*right.cost;
+				double FCost = t.subset.computeFCost(c);
+				double ps = t.subset.p;
+				double q = Math.min(ps, 1 - ps);
+				double combinedCost = FCost + c.m*q + ps * s.cost;
+        		//double combinedCost = getCombinedCost(new Plan(p, false, 0, null, null, leftchild, rightchild, combined));
 
 				if (combinedCost < currentCost) {
 						currentPlan.cost = combinedCost;
@@ -185,7 +194,7 @@ public class Algorithm {
 	}
 
 	// Recursive method for getting the cost of a combined plan
-	public double getCombinedCost(Plan p) {
+	/*public double getCombinedCost(Plan p) {
 
 		if (p == null)
 			return 0;
@@ -206,11 +215,11 @@ public class Algorithm {
 		double q = Math.min(ps, 1 - ps);
 		return FCost + c.m*q + ps * getCombinedCost(rightchild);	// Equation 1
 
-	}
+	}*/
 
-	// Determine if the current plan is a leaf of the tree (logical-and)
+	// Determine if the current plan is a leaf
 	public boolean noChildren (Plan p) {
-		return p.left < 0 && p.right < 0;
+		return p.leftchild < 0 && p.rightchild < 0;
 	}
 
 	// Need to print the code recursively (binary tree)

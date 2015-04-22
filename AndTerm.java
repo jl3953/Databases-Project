@@ -9,6 +9,7 @@ public class AndTerm {
 	//private ArrayList<BasicTerm> terms;
 	private TreeSet<BasicTerm> terms;
 	private int index;						// Represents where in array A this subset is stored
+	public long bitmap;
 
 	public AndTerm(BasicTerm term) {
 		this.terms  = new ArrayList<BasicTerm>();
@@ -38,6 +39,7 @@ public class AndTerm {
 	// Location in array A of Algorithm 4.11
 	public int setIndex(int i) {
 		index = i;
+		bitmap = i+1;
 	}
 
 	public int getIndex() {
@@ -164,5 +166,20 @@ public class AndTerm {
 	public size() {
 		return terms.size();
 	}
+
+	public void setBit (long b) {
+		this.bitmap = b;
+	}
+
+	// Simpler implementation of whether two plans intersect
+    public boolean intersection(AndTerm p2) {
+        return (this.bitmap & p2.bitmap) != 0;
+    }
+
+	// Index of union of two plans in the array
+    public int union (AndTerm p2) {
+		long index = (this.bitmap | p2.bitmap);
+        return (int) (index - 1);
+    }
 
 }
