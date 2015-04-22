@@ -11,10 +11,10 @@ public class Plan {
 	Plan right;					// Right subplan
 	int leftchild;				// Index of left child subplan that gives best cost
 	int rightchild;				// Index of right child subplan that gives best cost
-	public BasicTerms terms;	//List of basic terms
+	public AndTerm andTerm;		// &-term with list of basic terms
 
 	// Create a new Plan
-	public Plan(double p, boolean nobranch, double cost, Plan left, Plan right, int leftchild, int rightchild, BasicTerms andTerm) {
+	public Plan(double p, boolean nobranch, double cost, Plan left, Plan right, int leftchild, int rightchild, AndTerm andTerm) {
 
 		this.nobranch = nobranch;
 		this.cost = c;
@@ -22,18 +22,18 @@ public class Plan {
 		this.right = right;
 		this.leftchild = leftchild;
 		this.rightchild = rightchild;
-		this.terms = andTerm;
+		this.andTerm = andTerm;
 		this.p = andTerm.computePs();
-		n = this.terms.terms.size();
+		this.n = andTerm.terms.size();
 	}
 
 	// Get the leftmost &-term - Used in Algorithm 4.11
 
-	public BasicTerms getLeftMostAndTerm(ArrayList<Plan> plans) {
+	public AndTerm getLeftMostAndTerm(ArrayList<Plan> plans) {
 		Plan current = this;
 		while (current.left >= 0) {
 			current = plans.get((int)current.left);
 		}
-		return current.terms;
+		return current.andTerm;
 	}
 }

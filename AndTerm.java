@@ -1,23 +1,23 @@
 import java.util.ArrayList;
 
-// ArrayList of Basic Terms
+// The Logical-And term (&-term) is a collection of basic terms
 // Implements functions to compute the C-metric and D-metric
 // Implements functions to compute the cost of No-Branching and Logical-And Algorithms
 
-public class BasicTerms {
+public class AndTerm {
 
 	private ArrayList<BasicTerm> terms;
 
-	public BasicTerms(BasicTerm term) {
+	public AndTerm(BasicTerm term) {
 		this.terms  = new ArrayList<BasicTerm>();
 		terms.add(term);
 	}
 
-	public BasicTerms(ArrayList<BasicTerm> terms) {
+	public AndTerm(ArrayList<BasicTerm> terms) {
 		this.terms = terms;
 	}
 
-	public BasicTerms() {
+	public AndTerm() {
 		this.terms  = new ArrayList<BasicTerm>();
 	}
 
