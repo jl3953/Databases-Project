@@ -222,7 +222,7 @@ public class Algorithm {
 			TreeSet<BasicTerm> terms = optimal.subset.getTerms();
 			int size = terms.size();
 			for(BasicTerm term : terms) {
-				sb.append(t);
+				sb.append(term);
 				if (size > 1) {
 					sb.append(" & ");
 				}
@@ -239,12 +239,14 @@ public class Algorithm {
 		Plan right = plans.get((int) optimal.right);
 
 		sb.append("if(");
-		sb.append(printCode(left) + " && " + printCode(right));
+		sb.append(getCodeHelper(left) + " && " + getCodeHelper(right));
 		sb.append(") {\n");
 
-		// check if last &-term works
+		// check if last &-term is no-branching
 		// otherwise, add answer[j++] = i;
-		Plan rightmost = rightmostAnd(optimal, plans);
+		Plan rightmost = optimal;
+		while (rightmost.right >= 0)
+			rightmost = plans.get((int) rightmost.right);
 
 		if(rightmost.nobranch) {
 			TreeSet<BasicTerm> terms = optimal.subset.getTerms();
@@ -265,7 +267,56 @@ public class Algorithm {
 		}
 
 		sb.append("\n}");
-
 		return sb.toString();
 	}
+
+ // Helper method for printing non-root code
+	public String getCodeHelper (Plan p) {
+		StringBuffer sb = new StringBuffer();
+
+		// end this recursion branch if there are no children
+		if(noChildren(p)) {
+			TreeSet<BasicTerm> terms = p.subset.getTerms();
+			int size = terms.size();
+			for(BasicTerm term : terms) {
+				sb.append(term);
+				if (size > 1) {
+					sb.append(" & ");
+				}
+				size--;
+			}
+			if (p.nobranch) {
+				sb.insert(0, "answer[j] = i; \n j += (");
+				sb.append(");");
+			}
+			return sb.toString();
+		}
+
+		Plan left = plans.get((int) p.left);
+		Plan right = plans.get((int) p.right);
+
+		TreeSet<BasicTerm> terms = p.subset.getTerms();
+		TreeSet<BasicTerm> leftTerms = left.subset.getTerms();
+		TreeSet<BasicTerm> rightTerms = right.subset.getTerms();
+
+		sb.append("(");
+
+		if (noChildren(right) && right.nobranch)
+			sb.append(getCodeHelper(left));
+		else {
+			sb.append(getCodeHelper(left) + " && ");
+
+			if(noChildren(right) && !right.nobranch) {
+				sb.append("(");
+				sb.append(getCodeHelper(right));
+				sb.append(")");
+			}
+			else
+				sb.append(getCodeHelper(right));
+		}
+		sb.append(")");
+		return sb.toString();
+	}
+
+
 }
