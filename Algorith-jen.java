@@ -1,21 +1,19 @@
 import java.util.HashMap;
 
-
 public class Algorithm {
 
-    private HashMap<AndTerm, Plan> A; //array indexed by subset
-    private AndTerm terms; //the set of basic terms given to us for testing
-    private Cost c; //given configurations
+    private HashMap<AndTerm, Plan> A; 	//array indexed by subset
+    private AndTerm terms; 				//the set of basic terms given to us for testing
+    private Cost c; 					//given configurations
 
     public Algorithm(AndTerm terms, Cost c){
-	this.terms = terms;
-	this.c = c;
-	this.A = this.initialize();
+		this.terms = terms;
+		this.c = c;
+		this.A = this.initialize();
     }
 
     /**
       * Dynamic Programming algorithm that computes the least cost plan
-      *
       */
     public void runAlgorithm (){
 	
@@ -68,20 +66,20 @@ public class Algorithm {
      * @return a hashmap of costs indexed by plans
      */
     private HashMap<AndTerm, Plan> initialize(){
-	HashMap<AndTerm, Plan> result = new HashMap<AndTerm, Plan>();
+		HashMap<AndTerm, Plan> result = new HashMap<AndTerm, Plan>();
 
-	ArrayList<AndTerm> keys = this.getSubsets(this.terms);
-	ArrayList<Plan> values = this.getPlans(keys);
+		ArrayList<AndTerm> keys = this.getSubsets(this.terms);
+		ArrayList<Plan> values = this.getPlans(keys);
 
-	//match up the keys and values in the hashmap
-	Iterator it = values.iterator();
-	for (AndTerm key : keys){
-	    it.hasNext();
-	    Plan value = it.next();
-	    result.put(key, value);
-	}
+		//match up the keys and values in the hashmap
+		Iterator it = values.iterator();
+		for (AndTerm key : keys){
+			it.hasNext();
+			Plan value = it.next();
+			result.put(key, value);
+		}
 
-	return result;
+		return result;
     }
 
     /**
@@ -109,20 +107,20 @@ public class Algorithm {
 		}
 	    }
 	    index--;
-	    subset.setIndex(index - 1); 
+	    subset.setIndex(index - 1);
 	    sets.add(0, subset); // add to front
 	}
 	return sets;
     }
 
-	
+
     /**
       * Retrieves the cost of all plans according to the terms in the subset.
       * @param A an arraylist of all possible subsets
       * @return an arraylist of all initial costs computed
       */
     public ArrayList<Plan> getPlans(ArrayList<AndTerm> A){
-    
+
 	ArrayList<Plan> result = new ArrayList<Plan>();
 
 	for (AndTerm subset: A) {
@@ -133,7 +131,7 @@ public class Algorithm {
 	    boolean b = false; //not using nobranchcost yet
 
 	    //if no-branch has lower cost, replace logical and
-	    if (nobranch < cost) {                  
+	    if (nobranch < cost) {
 		cost = nobranch;
 		boolean b = true;
 	    }

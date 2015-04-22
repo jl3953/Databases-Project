@@ -7,21 +7,32 @@ import java.util.ArrayList;
 public class AndTerm {
 
 	private ArrayList<BasicTerm> terms;
-	private int index; // Represents where in the array of keys that this subset is stored
+	private int index; 	// Represents where in the array of keys that this subset is stored
 	public long bitmap; //representation of bitmap
 
 	public AndTerm(BasicTerm term) {
 		this.terms  = new ArrayList<BasicTerm>();
 		terms.add(term);
 		this.index = -1;
+		this.bitmap = -1;
 	}
 
 	public AndTerm(ArrayList<BasicTerm> terms) {
 		this.terms = terms;
+		this.index = -1;
+		this.bitmap = -1;
+	}
+
+	public AndTerm(ArrayList<BasicTerm> terms, index, bitmap) {
+		this.terms = terms;
+		this.index = index;
+		this.bitmap = bitmap;
 	}
 
 	public AndTerm() {
 		this.terms  = new ArrayList<BasicTerm>();
+		this.index = -1;
+		this.bitmap = -1;
 	}
 
 	public void add(BasicTerm term) {
@@ -174,7 +185,7 @@ public class AndTerm {
 	public void setBit (long b) {
 		this.bitmap = b;
 	}
-	
+
 	/**
 	  * Simpler implementation of whether two plans intersect.
 	  * @param p2 other AndTerm set
