@@ -1,6 +1,6 @@
 import java.util.Properties;
 
-// Costs from Configuration File - Default is used
+// Costs from Configuration File - Default is used unless otherwise specified
 
 public class Costs {
 
@@ -24,11 +24,12 @@ public class Costs {
 		int a = Integer.parseInt(prop.getProperty("a"));
 		int f = Integer.parseInt(prop.getProperty("f"));
 
-		this.a = a;
-		this.f = f;
+		this.r = r;
+		this.t = t;
 		this.l = l;
 		this.m = m;
-		this.t = t;
-		this.r = r;
+		this.a = a;
+		this.f = f;
+
 	}
 }

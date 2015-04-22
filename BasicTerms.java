@@ -49,7 +49,7 @@ public class BasicTerms {
 		int a = c.a;
 		int f = c.f;
 
-		return k*r + (k-1)*l + f*k + a;		//Example 4.4
+		return k*r + (k-1)*l + f*k + a;		// Example 4.4
 	}
 
 	// The cost of Algorithm Logical-And
@@ -131,7 +131,7 @@ public class BasicTerms {
 
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		for (BasicTerm t : data) {
+		for (BasicTerm t : terms) {
 			sb.append(t.toString());
 			sb.append(" & ");
 			sb.append("\n");
