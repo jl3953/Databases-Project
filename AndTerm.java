@@ -6,14 +6,14 @@ import java.util.ArrayList;
 
 public class AndTerm {
 
-	//private ArrayList<BasicTerm> terms;
-	private TreeSet<BasicTerm> terms;
-	private int index;						// Represents where in array A this subset is stored
-	public long bitmap;
+	private ArrayList<BasicTerm> terms;
+	private int index; // Represents where in the array of keys that this subset is stored
+	public long bitmap; //representation of bitmap
 
 	public AndTerm(BasicTerm term) {
 		this.terms  = new ArrayList<BasicTerm>();
 		terms.add(term);
+		this.index = -1;
 	}
 
 	public AndTerm(ArrayList<BasicTerm> terms) {

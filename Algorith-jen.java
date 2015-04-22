@@ -126,7 +126,6 @@ public class Algorithm {
 	ArrayList<Plan> result = new ArrayList<Plan>();
 
 	for (AndTerm subset: A) {
-	    
 	    int n = subset.size(); // Number of basic terms
 	    double p = subset.computePs();  // Product of selectivities of basic terms
 	    double cost = subset.LogicalAndCost(this.c);
@@ -139,7 +138,7 @@ public class Algorithm {
 		boolean b = true;
 	    }
 
-	    Plan plan = new Plan(p, b, cost, null, null, -1, -1, subset);    // Right now the children don't exist
+	    Plan plan = new Plan(p, b, cost);    // Right now the children don't exist
 	    result.add(plan);
 
 	}
