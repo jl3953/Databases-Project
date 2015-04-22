@@ -16,7 +16,7 @@ public class Plan {
 	public AndTerm left;
 	public AndTerm right;
 
-	
+
 	/**
 	  * Constructor for new plan
 	  */
@@ -32,13 +32,13 @@ public class Plan {
 
 	/**
 	// Create a new Plan
-	public Plan(double p, 
-		boolean nobranch, 
-		double cost, 
-		Plan left, 
-		Plan right, 
-		int leftchild, 
-		int rightchild, 
+	public Plan(double p,
+		boolean nobranch,
+		double cost,
+		Plan left,
+		Plan right,
+		int leftchild,
+		int rightchild,
 		AndTerm andTerm) {
 
 		this.nobranch = nobranch;
@@ -53,15 +53,15 @@ public class Plan {
 	}
 
 	// Get the leftmost &-term - Used in Algorithm 4.11
-
-	public AndTerm getLeftMostAndTerm(ArrayList<Plan> plans) {
+*/
+	public AndTerm getLeftMostAndTerm(HashMap<AndTerm, Plan> A) {
 		Plan current = this;
 		while (current.left >= 0) {
 			current = plans.get((int)current.left);
 		}
 		return current.subset;
 	}
-
+/*
 	public void setBit (long b) {
 		this.bitmap = b;
 	}
