@@ -19,7 +19,7 @@ public class BasicTerm {
 		return sb.toString();
 	}
 
-	// Compare two basic terms
+	// Compare two basic terms - Used in Algorithm 4.11
 	public boolean equals(BasicTerm other) {
 		return this.function.equals(other.function) &&
 			   this.argument.equals(other.argument);

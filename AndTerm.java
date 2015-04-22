@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-// The Logical-and term  / subset (&-term) is a collection of basic terms
+// The Logical-and term  / subset (&-term) is a set of basic terms
 // Implements functions to compute the C-metric and D-metric
 // Implements functions to compute the cost of No-Branching and Logical-And Algorithms
 
@@ -24,16 +24,8 @@ public class AndTerm {
 	}
 
 	public void add(BasicTerm term) {
-		terms.add(term);
+			terms.add(term);
 	}
-
-	/*public BasicTerm get(int i) {
-		return term.get(i);
-	}
-
-	public ArrayList<BasicTerm> getTerms() {
-		return terms;
-	}*/
 
 	public TreeSet<BasicTerm> getTerms() {
 		return terms;
@@ -55,10 +47,6 @@ public class AndTerm {
 	// The cost of Algorithm No-Branch
 
 	public double NoBranchCost(Costs c) {
-		if (terms.size() < 1)
-			throw new IllegalArgumentException("No basic terms in plan");
-		if (c == null)
-			throw new IllegalArgumentException("Costs is null");
 
 		int k = terms.size();
 		int r = c.r;
@@ -93,9 +81,9 @@ public class AndTerm {
 		int a = c.a;
 		int f = c.f;
 
-		// Compute Q
+		// Compute q
 		double ps = computePs();
-		double q = ps <= 0.5 ? ps: 1 - selectivities;
+		double q = Math.min(ps, 1- ps);
 
 		return computeFCost(c) + m*q + ps*a;
 	}
@@ -106,13 +94,13 @@ public class AndTerm {
 		if (terms.size() == 0)
 			return 0;
 		double ps = 1.0;
-		for (BasicTerm term in terms) {
+		for (BasicTerm term: terms) {
 			ps *= term.p;
 		}
 		return ps;
 	}
 
-	// Get F cost of this & term according to Definition 4.7
+	// Get F cost of this &-term according to Definition 4.7
 
     public double computeFCost(Costs c) {
 		int k = terms.size();
@@ -148,13 +136,26 @@ public class AndTerm {
 
 	// Output this expression of basic terms as a string
 
-	public String toString() {
+	public String printTerms() {
 		StringBuffer sb = new StringBuffer();
-		for (BasicTerm t : terms) {
-			sb.append(t.toString());
+		for (BasicTerm term : terms) {
+			sb.append(term.toString());
 			sb.append(" & ");
 			sb.append("\n");
 		}
+		return sb.toString();
+	}
+
+	// Output the selectivities of the basic terms as a string
+
+	public String printPs() {
+		StringBuffer sb = new StringBuffer();
+
+		for(BasicTerm term : terms) {
+			sb.append(term.p);
+			sb.append(" ");
+		}
+
 		return sb.toString();
 	}
 

@@ -1,4 +1,5 @@
 import java.util.*;
+import java.Math.*;
 
 public class Algorithm {
 
@@ -20,9 +21,9 @@ public class Algorithm {
 
 	// Implementation of Algorithm 4.11
 
-	public plan runAlgorithm() {
+	public Plan runAlgorithm() {
 
-		NoBranchingAndInitialize(this.A); 		// Initialize array A - subsets and plans
+		NoBranchingAndInitialize(); 		// Initialize array A - subsets and plans
 
 		for (Plan s: plans) {
 			sTerms = s.getTerms();
@@ -58,7 +59,7 @@ public class Algorithm {
 				// D-metric test (Lemma 4.9)
 				if (t.p <= 0.5) {
 					boolean passDTest = true;
-					ArrayList<AndTerm> all = getAndTerms(s);
+					ArrayList<AndTerm> all = getAndTerms(s);		// need to compare against all &-terms of S
 					for (AndTerm term: all) {
 						Metric DMetric = term.computeDMetric(c);
 						if (DMetric.x  < DMetrict.x && DMetric.y < DMetrict.y) {
@@ -79,9 +80,9 @@ public class Algorithm {
 					combined.add(term);
 
 				int index = 0;
-				for (Plan p : plans) {
+				for (Plan p: plans) {
 					AndTerm current = new AndTerm(p.subset);
-					if (term.size() == current.size()) {
+					if (combined.size() == current.size()) {
 						boolean match = true;
 						for (BasicTerm term: combined.getTerms()) {
 							if (!contains(curr.getTerms(), t)) {
@@ -99,8 +100,8 @@ public class Algorithm {
 				double currentCost = currentPlan.cost;
 
 				double p = s.p * t.p;		// the combined selectivity
-				int leftchild = s.subset.getIndex();
-				int righchild = t.subset.getIndex();
+				int leftchild = t.subset.getIndex();
+				int rightchild = s.subset.getIndex();
 				double combinedCost = getCombinedCost(new Plan(p, false, 0, null, null, leftchild, rightchild, combined));
 
 				if (combinedCost < currentCost) {
@@ -111,13 +112,13 @@ public class Algorithm {
 			}
 		}
 
-		// finally return the last plan of the dynamic programming algorithm
+		// finally return the result of the dynamic programming algorithm - the plan with all k basic terms in its subset
 		return plans.get(plans.size()-1);
 	}
 
 	// Create an array A of 2^k-1 possible nonempty plans with their costs and basic terms.
 
-    public void NoBranchingAndInitialize(AndTerm terms){
+    public void NoBranchingAndInitialize(){
 
 	 	this.A = getSubsets(terms);			// Initialize the array of subsets
 
@@ -141,7 +142,7 @@ public class Algorithm {
 
 	public void getSubsets(AndTerm terms) {
 		int size = terms.size();				// k
-		long max = 1 << setSize;				// 2^k
+		long max = Math.pow(2, size);			// 2^k
 		int index = max - 1;					// start from 2^k - 1
 		ArrayList<AndTerm> sets = new ArrayList<AndTerm>();
 		termArray = terms.getArray()
@@ -183,42 +184,88 @@ public class Algorithm {
 		}
 	}
 
-
 	// Recursive method for getting the cost of a combined plan
 	public double getCombinedCost(Plan p) {
 
 		if (p == null)
 			return 0;
 
-		// p is just a Logical-And Plan
-		if (p.left < 0 && p.right < 0) {
-			if (p.nobranch)
+		// p is just a Logical-And Plan with no more children - lowest level of tree
+		if (noChildren(p)) {
+			if (p.nobranch)			// Need to implement a function that makes sure this is the last &-term (Section 4.1)
 				return p.subset.NoBranchCost(c);
 			return p.subset.LogicalAndCost(c);
 		}
 
-		// p is a Branching-And Plan
-		if (LowestBranchingTerm(p)) {
-			Plan leftchild = plans.get((int) p.left);
-			double FCost = leftchild.subset.computeFCost(cm);
-			double selectivity = leftchild.p;
-			double q = Math.min(selectivity, 1 - selectivity);
-			Plan rightchild = plans.get((int) p.right);
-			return FCost + c.m*q + selectivity * getCombinedCost(rightchild);
+		// Otherise p must be a mixed plan, with its left child an &-term (Algorithm 4.11)
 
-		} else {
-			Plan leftchild = plans.get((int) p.left);
-			Plan rightchild = plans.get((int)p.right);
-			return getCombinedCost(leftchild) + getCombinedCost(rightchild);
-		}
+		Plan leftchild = plans.get((int) p.left)
+		Plan rightchild = plans.get((int) p.right);
+		double FCost = leftchild.subset.computeFCost(cm);
+		double ps = leftchild.p;
+		double q = Math.min(ps, 1 - ps);
+		return FCost + c.m*q + ps * getCombinedCost(rightchild);	// Equation 1
+
 	}
 
-	public boolean lowestBranchingTerm(Plan p) {
-		if (p.left >= 0) {
-			PlanRecord leftchild = plans.get((int)p.left);
-			if (leftchild.left < 0 && leftchild.right < 0) {
-				return true;
+	// Determine if the current plan is a leaf of the tree (logical-and)
+	public boolean noChildren (Plan p) {
+		return p.left < 0 && p.right < 0;
+	}
+
+	// Need to print the code recursively (binary tree)
+	public String getCode(Plan optimal) {
+		StringBuffer sb = new StringBuffer();
+
+		// end this recursion branch if there are no children
+		if(noChildren(optimal)) {
+			TreeSet<BasicTerm> terms = optimal.subset.getTerms();
+			int size = terms.size();
+			for(BasicTerm term : terms) {
+				sb.append(t);
+				if (size > 1) {
+					sb.append(" & ");
+				}
+				size--;
 			}
+			if (optimal.nobranch) {
+				sb.insert(0, "answer[j] = i; \n j += (");
+				sb.append(");");
+			}
+			return sb.toString();
 		}
-		return false;
+
+		Plan left = plans.get((int) optimal.left);
+		Plan right = plans.get((int) optimal.right);
+
+		sb.append("if(");
+		sb.append(printCode(left) + " && " + printCode(right));
+		sb.append(") {\n");
+
+		// check if last &-term works
+		// otherwise, add answer[j++] = i;
+		Plan rightmost = rightmostAnd(optimal, plans);
+
+		if(rightmost.nobranch) {
+			TreeSet<BasicTerm> terms = optimal.subset.getTerms();
+			int size = terms.size();
+			for(BasicTerm term : terms) {
+				sb.append(t);
+				if (size > 1) {
+					sb.append(" & ");
+				}
+				size--;
+			}
+			sb.insert(0, "\tanswer[j] = i; \n j += (");
+			sb.append(");");
+			return sb.toString();
+		}
+		else {
+			sb.append("\tanswer[j++] = i;");
+		}
+
+		sb.append("\n}");
+
+		return sb.toString();
 	}
+}
