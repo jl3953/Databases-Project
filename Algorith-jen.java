@@ -1,8 +1,8 @@
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class Algorithm {
 
-    private HashMap<AndTerm, Plan> A; 	//array indexed by subset
+    private LinkedHashMap<AndTerm, Plan> A; 	//array indexed by subset
     private AndTerm terms; 				//the set of basic terms given to us for testing
     private Cost c; 					//given configurations
 
@@ -37,7 +37,7 @@ public class Algorithm {
 
 				//D-metric test: lemma 4.9
 				//TODO dmetric test
-				Plan t = A[sprime];
+				Plan t = A.get(sprime);
 				if (t.p <= 0.5) {
 				/*	boolean passDTest = true;
 					ArrayList<AndTerm> all = getAndTerms(s);		// need to compare against all &-terms of S
@@ -106,6 +106,7 @@ public class Algorithm {
 
 		//generating all possible subsets
 		ArrayList<AndTerm> sets = new ArrayList<AndTerm>();
+		termArray = terms.getArray(); 		//ArrayList of basic terms
 
 		while (index > 0) {  // skip 0 - the empty set
 			BitSet bs = BitSet.valueOf(new long[]{index});
@@ -134,13 +135,19 @@ public class Algorithm {
 	ArrayList<Plan> result = new ArrayList<Plan>();
 
 		for (AndTerm subset: A) {
+			int n = subset.size(); 							// Number of basic terms
+			double p = subset.computePs();  				// Product of selectivities of basic terms
 			double cost = subset.LogicalAndCost(this.c);
 			double nobranch = subset.NoBranchCost(this.c);
+			boolean b = false; 								//not using nobranchcost yet
 
 			//if no-branch has lower cost, replace logical and
 			if (nobranch < cost) {
+				cost = nobranch;
+				boolean b = true;
 			}
 
+			Plan plan = new Plan(p, b, cost, subset);    // Right now the children don't exist
 			result.add(plan);
 
 		}
