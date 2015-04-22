@@ -48,7 +48,7 @@ public class Plan {
     }
 
 	// Index of union of two plans in the array
-    public int unionPlan p2) {
+    public int union(Plan p2) {
 		long index = (this.bitmap | p2.bitmap);
         return (int) (index - 1);
     }

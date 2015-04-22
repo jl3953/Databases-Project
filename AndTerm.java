@@ -28,6 +28,10 @@ public class AndTerm {
 			terms.add(term);
 	}
 
+	public void size(){
+	    return this.terms.size();
+	}
+
 	public TreeSet<BasicTerm> getTerms() {
 		return terms;
 	}
@@ -170,8 +174,12 @@ public class AndTerm {
 	public void setBit (long b) {
 		this.bitmap = b;
 	}
-
-	// Simpler implementation of whether two plans intersect
+	
+	/**
+	  * Simpler implementation of whether two plans intersect.
+	  * @param p2 other AndTerm set
+	  * @return true if the intersection is nonempty, false otherwise
+	  */
     public boolean intersection(AndTerm p2) {
         return (this.bitmap & p2.bitmap) != 0;
     }
