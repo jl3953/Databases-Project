@@ -1,5 +1,5 @@
 import java.util.ArrayList;
-import java.Math.*;
+import java.util.HashSet;
 
 // The Logical-and term  / subset (&-term) is a set of basic terms
 // Implements functions to compute the C-metric and D-metric
@@ -18,16 +18,20 @@ public class Subset {
 	public Subset right;		// Right child
 	public Metric cMetric;		// C-Metric
 	public Metric dMetric;		// D-Metric
-	public Metric highestDMetric;	// highest D-Metric
+	public HashSet<Metric> DMetrics;	// highest D-Metric
+	public Costs c;
 
 	// The complete constructor
 	public Subset(ArrayList<BasicTerm> terms, int index, Costs c, Subset left, Subset right) {
-		this.terms = terms;
+	    this.terms = terms;
+	    System.out.println(terms);
 		this.index = index;
 		this.p = this.computePs();
 		this.nobranch = false;						// By default
-		this.cost = this.logicalAndCost(c);			// Default cost is Logical-And cost
-		double nbc = this.noBranchCost(c);
+		this.cost = this.LogicalAndCost(c);			// Default cost is Logical-And cost
+//System.out.println(cost);
+		double nbc = this.NoBranchCost(c);
+//		System.out.println(nbc);
 		if (nbc < this.cost) {
 			this.nobranch = true;
 			this.cost = nbc;
@@ -36,14 +40,25 @@ public class Subset {
 		this.right = right;
 		this.leftMost = (left == null)? this : left.leftMost;
 		this.rightMost = (right == null)? this : right.rightMost;
-		this.cMetric = this.computeCMetric();
-		this.dMetric = this.computeDMetric();
-		this.highestDMetric = this.dMetric;
+		this.cMetric = this.computeCMetric(c);
+		this.dMetric = this.computeDMetric(c);
+		this.DMetrics = new HashSet<Metric>();
+		this.DMetrics.add(this.dMetric);
+		this.c = c;
 	}
 
 	// Add term to list of basic terms
 	public void add(BasicTerm term) {
 		this.terms.add(term);
+		this.p = this.computePs();
+		this.cost = this.LogicalAndCost(c);			// Default cost is Logical-And cost
+//System.out.println(cost);
+		double nbc = this.NoBranchCost(c);
+//		System.out.println(nbc);
+		if (nbc < this.cost) {
+			this.nobranch = true;
+			this.cost = nbc;
+		}
 	}
 
 	// Number of basic Terms
@@ -155,19 +170,22 @@ public class Subset {
 
 	public String toString() {
 		String buffer = "";
+		//System.out.println(this.index);
 		//branching and
-		if (p.left != null){
-			if (p.right.noBranch){
-				buffer += "(" + p.left.toString() + ")";
+		if (this.left != null){
+			if (this.right.nobranch && this.right.right == null){	//Needs to be rightmost 
+				buffer += "(" + this.left.toString() + ")";
 			}
 			else{
-				buffer += "(" + p.left.toString() + ") && (" + p.right.toString() + ")";
+				buffer += "(" + this.left.toString() + ") && (" + this.right.toString() + ")";
 			}
 		}
 		//logical and
 		else {
-			buffer += "(" + this.terms.get(1);
-			for (int i = 2; i < this.terms.size(); i++){
+			//System.out.println(this.terms);
+			//System.out.println(this.index);
+		    	buffer += "(" + this.terms.get(0);
+			for (int i = 1; i < this.terms.size(); i++){
 				buffer += " & " + this.terms.get(i);
 			}
 			buffer += ")";
@@ -178,14 +196,12 @@ public class Subset {
 	// Output the selectivities of the basic terms as a string
 
 	public String printPs() {
-		StringBuffer sb = new StringBuffer();
-
-		for(BasicTerm term : this.terms) {
-			sb.append(term.p.toString());
-			sb.append(" ");
-		}
-
-		return sb.toString();
+	    String sb = "";
+	    for (BasicTerm term : this.terms){
+		//System.out.println("" + term.p);
+		sb += term.p + " ";
+	    }
+	    return sb;
 	}
 
 	/**
@@ -199,11 +215,11 @@ public class Subset {
 
 	// Index of union of two plans in the array
     public int union (Subset s2) {
-		return (this.index | s2.index);
+	return (this.index | s2.index) - 1;
     }
 
 	// Update pointers to children, costs, and metrics (Algorithm 4.111)
-    public void newBranchingAnd(newCost, newLeft, newRight) {
+    public void newBranchingAnd(double newCost, Subset newLeft, Subset newRight) {
 		this.cost = newCost;
 		this.left = newLeft;
 		this.right = newRight;
@@ -211,8 +227,9 @@ public class Subset {
 		this.leftMost = left.leftMost;
 		this.rightMost = right.rightMost;
 
-		double childHighestDMetric = Math.max(left.highestDMetric, left.highestDMetric);
-		this.highestDMetric = Math.max(this.highestDMetric, childHighestDMetric);
+		this.DMetrics = new HashSet<Metric>();
+		this.DMetrics.addAll(left.DMetrics);
+		this.DMetrics.addAll(right.DMetrics);
 
 	}
 

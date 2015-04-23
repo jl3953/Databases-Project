@@ -5,7 +5,7 @@ public class BasicTerm {
 	public String argument;
 	public double p;			// Selectivity
 
-	public BasicTerm(String function, String argument, double selectivity) {
+	public BasicTerm(String function, String argument, double p) {
 		this.function = function;
 		this.argument = argument;
 		this.p = p;
@@ -19,10 +19,10 @@ public class BasicTerm {
 		return sb.toString();
 	}
 
-	// Compare two basic terms - Used in Algorithm 4.11
+/*	// Compare two basic terms - Used in Algorithm 4.11
 	public boolean equals(BasicTerm other) {
 		return this.function.equals(other.function) &&
 			   this.argument.equals(other.argument);
 	}
-
+*/
 }

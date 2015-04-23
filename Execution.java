@@ -6,7 +6,7 @@ import java.io.*;
 
 public class Execution
 {
-	public static void main(String[] args)
+	public static void main(String[] args) throws Exception
 	{
 
 		String query = args[0];
@@ -14,16 +14,17 @@ public class Execution
 
 		// Get the list of queries
 		ArrayList<double[]> queries = new ArrayList<double[]>();
-		Scanner sc = new Scanner(new File(queryPath));
-		while(sc.hasNextLine()) {
-			String line = sc.nextLine();
+		BufferedReader br = new BufferedReader(new FileReader(query));
+		String line = "";
+		while ((line = br.readLine()) != null){
 			String[] selectivities = line.split(" ");
 			double[] ps = new double[selectivities.length];
 
-			for (int i = 0; i < selectivities.length; i++)
+			for (int i = 0; i < selectivities.length; i++) {
 				ps[i] = Double.parseDouble(selectivities[i]);
+			}
 
-			query.add(ps);
+			queries.add(ps);
 		}
 
 		// Get the cost model
@@ -35,11 +36,12 @@ public class Execution
 		// Generate subsets with basic terms
 		int i = 1;
 		ArrayList<Subset> subsets = new ArrayList<Subset>();
-		for (double[] query: queries) {
+		for (double[] q : queries) {
 			Subset current = new Subset(new ArrayList<BasicTerm>(), -1, c, null, null);
-			for (double p: query) {
-				String function = "t" + new Integer(i).toString;
-				String argument = "o" + new Integer(i).toString + "[i]";
+			for (double p: q) {
+			    	//System.out.println(p);
+				String function = "t" + i;
+				String argument = "o" + i + "[i]";
 				current.add(new BasicTerm(function, argument, p));
 				i++;
 			}
@@ -64,12 +66,12 @@ public class Execution
 			double cost = optimal.cost;
 
 
-			bw.write("=====================================================");
-			bw.write(terms.printPs());
-			bw.write("-----------------------------------------------------");
-			bw.write(code);
-			bw.write("-----------------------------------------------------");
-			bw.write("Cost: " + cost);
+			bw.write("=====================================================\n");
+			bw.write(optimal.printPs() + "\n");
+			bw.write("-----------------------------------------------------\n");
+			bw.write(code + "\n");
+			bw.write("-----------------------------------------------------\n");
+			bw.write("Cost: " + cost + "\n");
 		}
 
 		bw.close();

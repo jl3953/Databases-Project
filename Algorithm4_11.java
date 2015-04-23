@@ -29,18 +29,25 @@ public class Algorithm4_11 {
 				//Otherwise, compute c and d metrics for both plans
 
 				Metric CMetric = s.leftMost.cMetric;
-				Metric DMetric = s.highestDMetric;
+				HashSet<Metric> DMetrics = s.DMetrics;
 				Metric CMetricPrime = sprime.cMetric;
 				Metric DMetricPrime = sprime.dMetric;
 
 				//C-metric test: lemma 4.8
-				if (CMetric.a < CMetricprime.a && CMetric.b <= CMetricprime.b)
+				if (CMetric.a < CMetricPrime.a && CMetric.b <= CMetricPrime.b)
 					continue;
 
 				//D-metric test: lemma 4.9
 				if (sprime.p <= 0.5) {
-					if (DMetric.a < DMetricprime.a && DMetric.b < DMetricprime.b)
-						continue;
+				    boolean passedTheDTest = true;
+				    for (Metric metric : DMetrics) {
+					if (metric.a < DMetricPrime.a && metric.b < DMetricPrime.b) {
+					    passedTheDTest = false;
+					    break;
+					}
+				    }
+				    if (!passedTheDTest)
+					continue;
 				}
 
 				//Find the optimal plan
@@ -55,15 +62,18 @@ public class Algorithm4_11 {
 				double q = Math.min(ps, 1 - ps);
 				double combinedCost = FCost + c.m*q + ps * s.cost;
 
+				System.out.println(combinedCost + " " + currentCost);
 				//if plan is optimal
 				if (combinedCost < currentCost){
-					u.newBranchingAnd(newCost, newLeft, newRight);
+					u.newBranchingAnd(combinedCost, sprime, s);
 				}
 			}
 		}
 
 		// Return the biggest subset with the optimal plan
-		return A.get(a.size()-1);
+		System.out.println(A.size());
+		System.out.println(A.get(A.size() -1).cost);
+		return A.get(A.size()-1);
 
     }
 
@@ -75,20 +85,22 @@ public class Algorithm4_11 {
 
 		ArrayList<Subset> output = new ArrayList<Subset>();
 		int numberOfTerm = this.bigSet.size(); 				// k
-		int possibleSubsets = Math.pow(2, numberOfTerm); 	// 2^k, maximum number of subsets
+		long possibleSubsets = (int) Math.pow(2, numberOfTerm); 	// 2^k, maximum number of subsets
 
-		ind index = 0;
+		int index = 1;
 		ArrayList<BasicTerm> listOfBasicTerms = this.bigSet.getTerms();
 
 		while (index < possibleSubsets) {
 			BitSet bs = BitSet.valueOf(new long[]{index});
-			Subset subset = new Subset(new ArrayList<BasicTerm>(), index, this.c, null, null);		// No children in initialization
+			ArrayList<BasicTerm> subsetTerms = new ArrayList<BasicTerm>();
+			//Subset subset = new Subset(new ArrayList<BasicTerm>(), index, this.c, null, null);		// No children in initialization
 			for (int i = 0; i < bs.length(); i++) {
 				if (bs.get(i)) {
-					subset.add(listOfBasicTerms.get(i));
+					subsetTerms.add(listOfBasicTerms.get(i));
 				}
 			}
 			index++;
+			Subset subset = new Subset(subsetTerms, index-1, this.c, null, null);		// No children in initialization
 			output.add(subset);
 		}
 
@@ -107,33 +119,16 @@ public class Algorithm4_11 {
 	public String getCode(Subset optimal) {
 		String sb = "if" + optimal + "{ \n";
 
-		// end this recursion branch if there are no children
-		//if(noChildren(optimal)) {
-			/*ArrayList<BasicTerm> terms = optimal.getTerms();
-			int numberOfTerms = terms.size();
-			for(BasicTerm term : terms) {
-				sb.append(term);
-				if (numberOfTerms > 1) {
-					sb.append(" & ");
-				}
-				numberOfTerms--;
-			}
-			sb.append(optimal.toString());
-			if (optimal.nobranch) {
-				sb.insert(0, "answer[j] = i; \n j += (");
-				sb.append(");");
-			}
-			return sb.toString();
-		}*/
-
 		// Check rightmost to see if no-branching
 		Subset rightMost = optimal.rightMost;
-		if (!rightMost.nobranch) {
-			sb += "\tanswer[j++] = i; \n }";
-		} else {
+		if (rightMost.nobranch && rightMost.right == null) {
 			sb += "\tanswer[j] = i; \n ";
-			sb += "\j += " + rightMost + "; \n }"
+			sb += "\tj += " + rightMost + "; \n }";
+		} else {
+			sb += "\tanswer[j++] = i; \n }";
 		}
+
+		return sb;
 
 	}
 
