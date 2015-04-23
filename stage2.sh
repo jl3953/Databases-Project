@@ -2,4 +2,4 @@
 
 args=("$@")
 
-java -cp bin/ Execution ${args[0]} ${args[1]}
+java -cp ./ Execution ${args[0]} ${args[1]}
