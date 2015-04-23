@@ -2,20 +2,32 @@ import java.util.Properties;
 
 // Costs from Configuration File - Default is used unless otherwise specified
 
+/**
+  * Costs in terms of CPU costs from Configuration File -- Default is used unles
+  * otherwise specified.
+  *
+  * @author Richard Chiou rc2758
+  * @author Jennifer Lam jl3953
+  */
 public class Costs {
 
-	public int r = 1;				// Cost to access element of array r
-	public int t = 2;				// Cost of performing if test
-	public int l = 1;				// Cost of performing logical and test
-	public int m = 16;				// Cost of branch mis-prediction
-	public int a = 2;				// Cost of writing answer
-	public int f = 4;				// Cost of applying function f
+	public int r = 1;	// Cost to access element of array r
+	public int t = 2;	// Cost of performing if test
+	public int l = 1;	// Cost of performing logical and test
+	public int m = 16;	// Cost of branch mis-prediction
+	public int a = 2;	// Cost of writing answer
+	public int f = 4;	// Cost of applying function f
 
+	/**
+	  * First constructor -- assumes default.
+	  */
 	public Costs() {
 		// Default costs: nothing needs to change
 	}
 
-	// Take advantage of Properties
+	/**
+	  * Second constructor -- takes advantage of Properties.
+	  */
 	public Costs(Properties prop) {
 		int r = Integer.parseInt(prop.getProperty("r"));
 		int t = Integer.parseInt(prop.getProperty("t"));
